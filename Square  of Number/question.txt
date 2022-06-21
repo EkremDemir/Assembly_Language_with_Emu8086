@@ -1,3 +1,2 @@
-code which calculates the
-squares of integers from 0 to 15 and stores then into the memory from
+The code calculates the squares of integers from 0 to 15 and stores then into the memory from
 location 0700:0000 to 0700:000F.
