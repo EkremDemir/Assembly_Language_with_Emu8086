@@ -1,0 +1,14 @@
+Consider 16 angles 5,10,15,20,.. 35,40,50,55..,85 in degrees. Note that
+angles 0,45,90 are omitted. Write x86 assembly code (and draw its flowchart onto the
+next slide) to find radian values (up to the second digit following the decimal point)
+and store into the memory with the following format:
+-Each degree angle (5,10,15,20,.. 35,40,50,55..,85) will be stored in hex values into
+the addresses starting from the logical address 0700:0000 to 0700:000F;
+-The integer values of equivalent radian angles should be stored in the memory
+locations 0700:0010 to 0700:001F, in ASCII code with the same order;
+-First digit after the decimal point of equivalent radian angles should be stored in the
+memory locations 0700:0020 to 0700:002F, in ASCII code with the same order;
+-Second digit after the decimal point of equivalent radian angles should be stored in
+the memory locations 0700:0030 to 0700:003F, in ASCII code with the same order;
+Note that you should do mathematical calculation to convert from degrees to radians,
+you may not write certain numbers to associated memory addresses.
