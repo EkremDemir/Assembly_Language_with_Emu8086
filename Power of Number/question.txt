@@ -1,0 +1,5 @@
+Assume AX=4. Write a code which calculates and stores the
+square of AX to BX, the cube of AX to CX and the fourth power to
+DX. Only restriction is you should NOT use MUL assembly
+command. Draw its flowchart, emulate the code in EMU8086
+environment and add screen shots of the results and the code.
