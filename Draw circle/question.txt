@@ -1,0 +1,4 @@
+Write a program to draw a white colored circle having a radius 120 pixels at
+the center of the popup window (640x480 resolution).First, find out the Y component of the circle and store it.
+Use only XLAT command to get the Y-values that you
+have stored .
