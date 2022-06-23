@@ -1,0 +1,18 @@
+: Write an x86 code to find the Y component of a circle of radius 120 pixels :
+Y =   √(R2− X2)
+(a) When the program is run, the following message should be displayed ;
+This code is written by Ekrem Demir.
+Enter an integer between 0 and 120, as X-pixel value :
+(b) Upon entering the integer, the program should check the integer and exit the program with
+another message,
+Entered integer is not between 0 and 120 !
+and upon pressing a key, the program should halt.
+(c) When the program is run and if the integer is correct, then the program should calculate the
+Y-pixel value (integer) on a circle of radius R (defined as a constant with a value 120 in the
+code) by using the following equation :
+Y-pixel value is = <integer>
+and upon pressing one more key ....
+(d) the program should calculate all set of X values from 0 to 120 store corresponding Yvalues
+into the memory locations starting with 0800:0000 (for example Y value for X=0
+should be stored at 0800:0000, Y value for X=1 should be stored at 0800:0001 ... etc) and
+upon completion the calculation, the program should halt with an ending message
