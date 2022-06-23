@@ -1,0 +1,4 @@
+Write a code to store the string
+“This code is eritten by Ekrem Demir”
+into memory locations starting at 0700:0500. Copy the string from backwards into
+memory locations starting at 0700:0540.
