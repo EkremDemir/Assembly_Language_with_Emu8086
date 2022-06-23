@@ -1,0 +1,2 @@
+Write a code to store your school number digits into memory
+locations starting from 0700:0030.
