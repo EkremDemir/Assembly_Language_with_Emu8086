@@ -1,0 +1,3 @@
+Assume AX= ̶ 4 (minus 4 !). Write a code which calculates and stores the
+square of AX to BX, the cube of AX to CX and the fourth power to DX. Only
+restriction is that, you should NOT use MUL assembly command
