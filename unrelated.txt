@@ -1,0 +1,207 @@
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include <ctime>
+#include <winsock2.h>
+
+#define PORT 8080
+#define BUFFER_SIZE 1024
+
+// Function to get current timestamp
+std::string getCurrentTime() {
+    time_t now = time(0);
+    struct tm tstruct;
+    char buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
+    return std::string(buf);
+}
+
+int main() {
+    // Initialize Winsock
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        std::cerr << "WSAStartup failed!" << std::endl;
+        return 1;
+    }
+
+    // Create socket
+    SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (serverSocket == INVALID_SOCKET) {
+        std::cerr << "Socket creation failed!" << std::endl;
+        WSACleanup();
+        return 1;
+    }
+
+    // Setup server address structure
+    sockaddr_in serverAddr;
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = INADDR_ANY;  // Listen on all network interfaces
+    serverAddr.sin_port = htons(PORT);        // Port 8080
+
+    // Bind the socket
+    if (bind(serverSocket, (sockaddr *)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
+        std::cerr << "Bind failed!" << std::endl;
+        closesocket(serverSocket);
+        WSACleanup();
+        return 1;
+    }
+
+    // Start listening for incoming connections (backlog of 5 connections)
+    if (listen(serverSocket, 5) == SOCKET_ERROR) {
+        std::cerr << "Listen failed!" << std::endl;
+        closesocket(serverSocket);
+        WSACleanup();
+        return 1;
+    }
+
+    std::cout << "Server is listening on port " << PORT << "..." << std::endl;
+
+    // Accept a client connection
+    sockaddr_in clientAddr;
+    int clientAddrLen = sizeof(clientAddr);
+    SOCKET clientSocket = accept(serverSocket, (sockaddr *)&clientAddr, &clientAddrLen);
+    if (clientSocket == INVALID_SOCKET) {
+        std::cerr << "Accept failed!" << std::endl;
+        closesocket(serverSocket);
+        WSACleanup();
+        return 1;
+    }
+
+    std::cout << "Client connected from " << inet_ntoa(clientAddr.sin_addr) << std::endl;
+
+    // Open log file to store received messages
+    std::ofstream logFile("received_messages.txt", std::ios::app);
+    if (!logFile.is_open()) {
+        std::cerr << "Failed to open log file!" << std::endl;
+        closesocket(clientSocket);
+        closesocket(serverSocket);
+        WSACleanup();
+        return 1;
+    }
+
+    char buffer[BUFFER_SIZE];
+    int bytesReceived;
+
+    // Receive messages from the client and log them with timestamps
+    while (true) {
+        memset(buffer, 0, sizeof(buffer));  // Clear the buffer
+
+        // Receive data from the client
+        bytesReceived = recv(clientSocket, buffer, sizeof(buffer), 0);
+        if (bytesReceived == SOCKET_ERROR) {
+            std::cerr << "Receive failed!" << std::endl;
+            break;
+        }
+
+        if (bytesReceived == 0) {
+            std::cout << "Client disconnected." << std::endl;
+            break;
+        }
+
+        // Get current timestamp
+        std::string timestamp = getCurrentTime();
+
+        // Write to the log file
+        logFile << "[" << timestamp << "] " << buffer << std::endl;
+        std::cout << "Received: " << buffer << std::endl;  // Print the message to console
+    }
+
+    // Close connections and clean up
+    logFile.close();
+    closesocket(clientSocket);
+    closesocket(serverSocket);
+    WSACleanup();
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// client.cpp - TCP Client on Ubuntu VM (sending fake messages)
+
+#include <iostream>
+#include <unistd.h>
+#include <cstring>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+
+#define SERVER_IP "192.168.56.1"  // Replace with Windows host IP (e.g., from Bridged mode)
+#define PORT 8080  // The port the server is listening on
+#define BUFFER_SIZE 1024
+
+int main() {
+    int sock;
+    struct sockaddr_in serverAddr;
+    char buffer[BUFFER_SIZE];
+    int counter = 1;
+
+    // Create a socket
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) {
+        std::cerr << "Socket creation failed!" << std::endl;
+        return 1;
+    }
+
+    // Set up the server address struct
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(PORT);  // Set the port number
+    serverAddr.sin_addr.s_addr = inet_addr(SERVER_IP);  // Server's IP address
+
+    // Connect to the server
+    if (connect(sock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
+        std::cerr << "Connection failed!" << std::endl;
+        close(sock);
+        return 1;
+    }
+
+    std::cout << "Connected to the server!" << std::endl;
+
+    // Simulate sending fake messages every 1 second
+    while (true) {
+        // Prepare the fake message with counter
+        snprintf(buffer, sizeof(buffer), "Fake message %d", counter++);
+
+        // Send the message to the server
+        if (send(sock, buffer, strlen(buffer), 0) < 0) {
+            std::cerr << "Send failed!" << std::endl;
+            break;
+        }
+
+        // Print the message sent to the console (for debugging)
+        std::cout << "Sent: " << buffer << std::endl;
+
+        // Sleep for 1 second before sending the next message
+        sleep(1);  
+    }
+
+    // Close the socket
+    close(sock);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
